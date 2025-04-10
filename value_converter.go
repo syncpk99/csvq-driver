@@ -2,6 +2,7 @@ package csvq
 
 import (
 	"database/sql/driver"
+	"database/sql"
 	"fmt"
 	"time"
 )
@@ -53,6 +54,54 @@ func (c ValueConverter) ConvertValue(v interface{}) (driver.Value, error) {
 		return Boolean{value: v.(bool)}, nil
 	case time.Time:
 		return Datetime{value: v.(time.Time)}, nil
+	case *sql.NullInt16:
+		val := v.(*sql.NullInt16)
+		if val.Valid {
+			return Integer{value: int64(val.Int16)}, nil
+		}
+		return Null{}, nil
+	case *sql.NullInt32:
+		val := v.(*sql.NullInt32)
+		if val.Valid {
+			return Integer{value: int64(val.Int32)}, nil
+		}
+		return Null{}, nil
+	case *sql.NullInt64:
+		val := v.(*sql.NullInt64)
+		if val.Valid {
+			return Integer{value: val.Int64}, nil
+		}
+		return Null{}, nil
+	case *sql.NullFloat64:
+		val := v.(*sql.NullFloat64)
+		if val.Valid {
+			return Float{value: val.Float64}, nil
+		}
+		return Null{}, nil
+	case *sql.NullBool:
+		val := v.(*sql.NullBool)
+		if val.Valid {
+			return Boolean{value: val.Bool}, nil
+		}
+		return Null{}, nil
+	case *sql.NullString:
+		val := v.(*sql.NullString)
+		if val.Valid {
+			return String{value: val.String}, nil
+		}
+		return Null{}, nil
+	case *sql.NullTime:
+		val := v.(*sql.NullTime)
+		if val.Valid {
+			return Datetime{value: val.Time}, nil
+		}
+		return Null{}, nil
+	case *sql.NullByte:
+		val := v.(*sql.NullByte)
+		if val.Valid {
+			return String{value: string([]byte{val.Byte})}, nil
+		}
+		return Null{}, nil
 	}
 
 	return nil, fmt.Errorf("unsupported type: %T", v)
