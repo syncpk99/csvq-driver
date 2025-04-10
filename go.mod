@@ -1,4 +1,4 @@
-module github.com/mithrandie/csvq-driver
+module github.com/syncpk99/csvq-driver
 
 require (
 	github.com/mithrandie/csvq v1.18.1
